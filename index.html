@@ -290,9 +290,14 @@
     // 全局变量
     let books = [];
     let currentEditBookId = null;
-    
+
     // 配置项
-    const USE_BACKEND_API = true; // 是否使用后端API（true: 使用后端API, false: 使用localStorage）
+    // 自动检测是否在Vercel环境中，Vercel环境下文件系统只读，需要使用localStorage
+    const isVercel = window.location.hostname.endsWith('.vercel.app');
+    // 检测是否为直接打开文件（file://协议），直接打开文件时无法使用后端API
+    const isFileProtocol = window.location.protocol === 'file:';
+    // 在Vercel环境或直接打开文件时，使用localStorage
+    const USE_BACKEND_API = !isVercel && !isFileProtocol;
     // 自动获取当前页面的主机地址，解决手机无法访问localhost的问题
     const currentUrl = new URL(window.location.href);
     const API_BASE_URL = `${currentUrl.protocol}//${currentUrl.host}/api`;
@@ -334,11 +339,20 @@
           initDefaultBooks();
         }
       }
-      
+
       // 渲染图书列表
       renderBookList();
     }
-    
+
+    // 保存图书数据
+    async function saveBooks() {
+      if (!USE_BACKEND_API) {
+        // 只有在使用localStorage时才需要保存整个数组
+        localStorage.setItem('books', JSON.stringify(books));
+      }
+      // 使用后端API时，不需要保存整个数组，因为增删改操作已经通过各自的API完成了
+    }
+
     // 初始化默认图书数据
     function initDefaultBooks() {
       books = [
@@ -359,7 +373,7 @@
           description: '一本精美的HTML与CSS入门书籍，适合初学者学习网页设计。'
         }
       ];
-      
+
       // 保存默认数据
       saveBooks();
     }
@@ -417,7 +431,7 @@
       };
 
       let success = false;
-      
+
       if (USE_BACKEND_API) {
         // 使用后端API添加图书
         try {
@@ -428,7 +442,7 @@
             },
             body: JSON.stringify(newBook)
           });
-          
+
           if (response.ok) {
             const addedBook = await response.json();
             books.push(addedBook);
@@ -446,7 +460,7 @@
       if (success) {
         // 保存数据
         await saveBooks();
-        
+
         // 重新渲染列表
         renderBookList();
 
@@ -516,7 +530,7 @@
       };
 
       let success = false;
-      
+
       if (USE_BACKEND_API) {
         // 使用后端API更新图书
         try {
@@ -527,7 +541,7 @@
             },
             body: JSON.stringify(updatedBook)
           });
-          
+
           if (response.ok) {
             books[bookIndex] = await response.json();
             success = true;
@@ -544,7 +558,7 @@
       if (success) {
         // 保存数据
         await saveBooks();
-        
+
         // 重新渲染列表
         renderBookList();
 
@@ -561,14 +575,14 @@
     async function deleteBook(bookId) {
       if (confirm('确定要删除这本书吗？')) {
         let success = false;
-        
+
         if (USE_BACKEND_API) {
           // 使用后端API删除图书
           try {
             const response = await fetch(`${API_BASE_URL}/books/${bookId}`, {
               method: 'DELETE'
             });
-            
+
             if (response.ok) {
               books = books.filter(book => book.id !== bookId);
               success = true;
@@ -585,7 +599,7 @@
         if (success) {
           // 保存数据
           await saveBooks();
-          
+
           // 重新渲染列表
           renderBookList();
 
