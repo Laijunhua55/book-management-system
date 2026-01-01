@@ -1,0 +1,30 @@
+# 依赖目录
+node_modules/
+
+# 日志文件
+*.log
+
+# 环境变量文件
+.env
+
+# 临时文件
+*.tmp
+*.temp
+
+# 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 数据文件（如果不需要版本控制）
+# books.json
+
+# 压缩文件
+*.zip
+*.rar
+*.7z
+
+# 可执行文件
+*.exe
+*.bin
