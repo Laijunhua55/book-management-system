@@ -6,7 +6,11 @@
       "use": "@vercel/node"
     },
     {
-      "src": "(.*\\.(html|css|js|json|png|jpg|jpeg|gif|svg|ico))$",
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "(.*\\.(css|js|json|png|jpg|jpeg|gif|svg|ico))$",
       "use": "@vercel/static"
     }
   ],
@@ -20,8 +24,8 @@
       "dest": "/index.html"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "src": "/index.html",
+      "dest": "/index.html"
     }
   ]
 }
