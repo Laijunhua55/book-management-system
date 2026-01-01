@@ -99,7 +99,19 @@ app.delete('/api/books/:id', (req, res) => {
   res.json({ message: '图书删除成功' });
 });
 
-// API服务器只处理API请求，静态文件由Vercel直接处理
+// 提供静态文件服务 - 使用绝对路径确保在Vercel环境中正常工作
+const path = require('path');
+app.use(express.static(path.join(process.cwd())));
+
+// 处理根路径请求
+app.get('/', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'index.html'));
+});
+
+// 处理index.html直接访问
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'index.html'));
+});
 
 // 启动服务器
 const PORT = process.env.PORT || 3000;
