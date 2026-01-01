@@ -376,15 +376,6 @@
       saveBooks();
     }
 
-    // 保存图书数据
-    async function saveBooks() {
-      if (!USE_BACKEND_API) {
-        // 只有在使用localStorage时才需要保存整个数组
-        localStorage.setItem('books', JSON.stringify(books));
-      }
-      // 使用后端API时，不需要保存整个数组，因为增删改操作已经通过各自的API完成了
-    }
-
     // 渲染图书列表
     function renderBookList() {
       bookTableBody.innerHTML = '';

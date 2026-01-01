@@ -109,6 +109,16 @@ app.delete('/api/books/:id', (req, res) => {
 // 提供静态文件服务
 app.use(express.static(__dirname));
 
+// 处理根路径请求
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// 处理index.html直接访问
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // 启动服务器
 const PORT = process.env.PORT || 3000;
 
