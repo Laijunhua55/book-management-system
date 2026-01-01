@@ -291,14 +291,12 @@
     let books = [];
     let currentEditBookId = null;
 
-    // 配置项
-    // 自动检测是否在Vercel环境中，Vercel环境下文件系统只读，需要使用localStorage
+    // 配置项 - 重新启用后端API
+    // 在Vercel环境下使用内存数据，在本地环境下使用文件数据
     const isVercel = window.location.hostname.endsWith('.vercel.app');
-    // 检测是否为直接打开文件（file://协议），直接打开文件时无法使用后端API
-    const isFileProtocol = window.location.protocol === 'file:';
-    // 在Vercel环境或直接打开文件时，使用localStorage
-    const USE_BACKEND_API = !isVercel && !isFileProtocol;
-    // 自动获取当前页面的主机地址，解决手机无法访问localhost的问题
+    // 始终使用后端API，让外地朋友能访问
+    const USE_BACKEND_API = true;
+    // 自动获取当前页面的主机地址
     const currentUrl = new URL(window.location.href);
     const API_BASE_URL = `${currentUrl.protocol}//${currentUrl.host}/api`;
 
